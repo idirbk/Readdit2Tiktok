@@ -21,8 +21,8 @@ def add_sound_to_video(video_path, sound_path, output_path):
     # Add the audio to the video
     video_clip = video_clip.set_audio(sound_clip)
 
-    # Write the result to a new file
-    video_clip.write_videofile(output_path)
+    # Write the result to a new file, specifying the codec
+    video_clip.write_videofile(output_path, codec='libx264')
 
     # Close the clips
     video_clip.close()
