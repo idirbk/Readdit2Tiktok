@@ -1,0 +1,5 @@
+brahim.berkennou15@gmail.com
+mm
+bberkenou
+
+sudo apt-get install libespeak1
