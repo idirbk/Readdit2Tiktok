@@ -1,25 +1,20 @@
-import requests
 
+import praw
 
-Subreddit = 'AskReddit'
+reddit = praw.Reddit(client_id='kcsMkzolc0ZCRAMvz7di-w',
+                     client_secret='6yop0cRbeQPRBj4_mSn3Qf55aXL9Ig',
+                     user_agent='Mozilla/5.0')
 
+subreddit = reddit.subreddit('LetsNotMeet')
+hot_posts = subreddit.hot(limit=10)
 
-url = f'https://www.reddit.com/r/{Subreddit}/top.json?limit=10'
-headers = {'User-agent': 'Mozilla/5.0'}
-response = requests.get(url, headers=headers)
-data = response.json()
+for post in hot_posts:
+    print(post.title)
+    print('Score:', post.score)
+    print('URL:', post.url)
+    print('id:', post.id)
+    print('text: \n', post.selftext)
+    print('date', post.created_utc)
+    
 
-for post in data['data']['children']:
-    print("##################################################################")
-    print(post['data']['title'])
-
-    print('--- COMMENTS ---')
-    post_id = post['data']['id']
-    comments_url = f'https://www.reddit.com/r/AskReddit/comments/{post_id}.json'
-    response = requests.get(comments_url, headers=headers)
-    comments_data = response.json()
-    for comment in comments_data[1]['data']['children']:
-        if 'data' in comment :
-            if 'body' in comment['data'] :
-                print(comment['data']['body'])
-                print('----------------')
+    
