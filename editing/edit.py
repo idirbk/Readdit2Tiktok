@@ -3,7 +3,7 @@ import pyttsx3
 import numpy as np
 from moviepy import editor as mp
 
-def add_text_and_sound_to_video(video_path, text, output_path):
+def add_text_and_sound_to_video(video_path, text, output_path, i, start_time=0):
     # Open the video
     video = cv2.VideoCapture(video_path)
 
@@ -14,20 +14,23 @@ def add_text_and_sound_to_video(video_path, text, output_path):
 
     # Convert text to speech
     engine = pyttsx3.init()
-    engine.save_to_file(text, "text_audio.wav")  # Save the speech as an audio file
+    engine.save_to_file(text, "text_audio_{}.wav".format(i))  # Save the speech as an audio file
     engine.runAndWait()
 
     # Load the audio file
-    audio = mp.AudioFileClip("text_audio.wav")
+    audio = mp.AudioFileClip("text_audio_{}.wav".format(i))
 
     # Create a VideoFileClip object
     video = mp.VideoFileClip(video_path)
 
-    # Trim the video to match the audio duration
-    video = video.subclip(0, audio.duration)
+    # Trim the video to match the audio duration, starting from start_time
+    video = video.subclip(start_time, start_time + audio.duration)
 
     # Set the audio for the video
     video = video.set_audio(audio)
+
+    # Add a fade in and fade out effect
+    video = video.crossfadein(2).crossfadeout(2)
 
     # Function to add text to each frame
     def add_text(image):
@@ -87,4 +90,72 @@ def add_text_and_sound_to_video(video_path, text, output_path):
     # Cleanup temporary files
     audio.close()
     video.close()
+    # delete audio file
+    # os.remove("text_audio_{}.wav".format(i))
     cv2.destroyAllWindows()
+
+
+def concatenate_videos(video_files, output_file):
+    # Load video files and create clips
+    video_clips = [mp.VideoFileClip(video) for video in video_files]
+
+    # Concatenate the clips
+    final_clip = mp.concatenate_videoclips(video_clips)
+
+    # Write the result to a file
+    final_clip.write_videofile(output_file, codec='libx264')
+
+
+def split_text_into_sentences(text, max_length=120):
+    # Split the text at each period
+    sentences = text.split('.')
+
+    # Remove any empty strings from the list
+    sentences = [sentence.strip() for sentence in sentences if sentence.strip() != '']
+
+    # Further split each sentence into chunks of at most max_length characters
+    chunks = []
+    for sentence in sentences:
+        while len(sentence) > max_length:
+            # Find the last space within max_length characters
+            split_index = sentence.rfind(' ', 0, max_length)
+            if split_index == -1:
+                # If no space was found, just split at max_length
+                split_index = max_length
+            chunks.append(sentence[:split_index].strip())
+            sentence = sentence[split_index:].strip()
+        chunks.append(sentence)
+
+    return chunks
+
+
+
+if __name__ == '__main__':
+    print("Starting the script")
+
+    in_path = r"my_video.mp4"
+    out_path = r"video_{}.mp4"
+
+    # Example usage
+    text = "ChatGPT is an advanced language model developed by OpenAI. It is trained on 8 million web pages and is able to generate realistic and coherent continuations of text. It can also perform rudimentary reading comprehension."
+
+    texts = split_text_into_sentences(text)
+
+    for i, chunk in enumerate(texts):
+        print(f"Chunk {i + 1}: {texts[i]}")
+
+    start_time = 0
+    for i in range(len(texts)):
+        print(texts[i])
+        add_text_and_sound_to_video(in_path, texts[i], out_path.format(i), i, start_time)
+        start_time += len(texts[i]) / 10  # adjust this to match your TTS speed
+
+    # Example usage:
+    video_files = []
+    for i in range(len(texts)):
+        print(out_path.format(i))
+        video_files.append(out_path.format(i))
+
+    output_file = r"concatenation.mp4"
+    print('concatenation')
+    concatenate_videos(video_files, output_file)
