@@ -7,7 +7,7 @@ youtube = build('youtube', 'v3', developerKey='AIzaSyAYRPKUccJhxDRF5fvzjNG40D8Og
 
 # Recherchez des vidéos du jeu Subway Surfers sur YouTube
 search_response = youtube.search().list(
-    q='fortnite parkour video tiktok format',
+    q='gameplay parkour video tiktok format',
     type='video',
     videoDefinition='high',
     videoDimension='2d',
@@ -17,7 +17,8 @@ search_response = youtube.search().list(
     fields='items(id(videoId))',
     maxResults=10,
     part='id,snippet',
-    videoDuration='short'
+    videoDuration='short',
+    safeSearch='none'
 ).execute()
 
 # Récupérez les ID des vidéos de Subway Surfers trouvées
@@ -38,14 +39,14 @@ for video in videos_response['items']:
 
     # Télécharger la vidéo au format mobile
     yt = YouTube(f"https://www.youtube.com/watch?v={video['id']}&t=1m")
-    if yt.age_restricted:
+    if yt.age_restricted or not yt.streams:
             print("La vidéo est restreinte par âge. Ignorer le téléchargement.")
             continue
 
     stream = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').first()
 
     if stream:
-        yt.streams.get_by_itag(18).download()
+        stream.download()
         print("La vidéo a été téléchargée avec succès.")
     else:
         print("Impossible de trouver une vidéo correspondant aux critères de recherche.")
