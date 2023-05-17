@@ -32,7 +32,7 @@ def get_story(number: int):
     return top_stories
 
 
-if name == '__main__':
+if __name__ == '__main__':
     # Récupérez les 10 meilleures histoires de chaque subreddit choisi
     for subreddit_name in subreddits:
         subreddit = reddit.subreddit(subreddit_name)

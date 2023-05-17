@@ -7,6 +7,9 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"  # Set the date and time format
 )
 
+
+stream_handler = logging.StreamHandler()  # Create a stream handler
+
 # Create a file handler
 file_handler = logging.FileHandler("log.txt")  # Specify the path to the log file
 
@@ -20,4 +23,5 @@ file_handler.setFormatter(formatter)
 # Attach the file handler to the logger
 logger = logging.getLogger(__name__)
 logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 

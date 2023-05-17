@@ -133,5 +133,7 @@ dmypy.json
 # log files
 .log
 
-.mp3
-.wav
+# editing files
+*.mp3
+*.wav
+*.mp4
