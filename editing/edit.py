@@ -106,7 +106,7 @@ def concatenate_videos(video_files, output_file):
     final_clip.write_videofile(output_file, codec='libx264')
 
 
-def split_text_into_sentences(text, max_length=120):
+def split_text_into_sentences(text, max_length=50):
     # Split the text at each period
     sentences = text.split('.')
 
