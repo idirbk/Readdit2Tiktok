@@ -20,7 +20,7 @@ def generate_video(title):
             fields='items(id(videoId))',
             maxResults=10,
             part='id,snippet',
-            videoDuration='short',
+            videoDuration='medium',
             safeSearch='none'
         ).execute()
 
