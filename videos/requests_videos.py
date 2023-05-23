@@ -59,6 +59,3 @@ def generate_video(title) :
         print("------------------------------------")
         print(f"Titre: {video_title}")
         print(f"Lien: {video_link}")
-
-generate_video('minecraft')
- 

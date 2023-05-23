@@ -21,13 +21,14 @@ reddit = praw.Reddit(
 # Liste des subreddits choisis
 
 subreddits = []
-with open('subreddit.txt', 'r') as f:
+with open('readit\subreddit.txt', 'r') as f:
     for line in f:
         subreddits.append(line.strip())
 
 
 def get_story(number: int):
-    subreddit = random.choice(subreddits)
+    item = random.choice(subreddits)
+    subreddit = reddit.subreddit(item)
     top_stories = subreddit.top(limit=number)
     return top_stories
 

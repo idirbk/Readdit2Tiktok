@@ -7,3 +7,5 @@ praw
 gTTS
 pydub
 numpy
+google-api-python-client
+pytube
