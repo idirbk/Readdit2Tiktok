@@ -1,7 +1,7 @@
 import praw
 from dotenv import load_dotenv
 import os
-
+import random
 # Load environment variables from .env
 load_dotenv()
 
@@ -27,8 +27,8 @@ with open('subreddit.txt', 'r') as f:
 
 
 def get_story(number: int):
-    subreddit = rreddit.subreddit(subreddit).random()
-    top_stories = subreddit.top(limit=10)
+    subreddit = random.choice(subreddits)
+    top_stories = subreddit.top(limit=number)
     return top_stories
 
 
