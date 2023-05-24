@@ -2,6 +2,7 @@ import praw
 from dotenv import load_dotenv
 import os
 import random
+
 # Load environment variables from .env
 load_dotenv()
 
@@ -19,7 +20,6 @@ reddit = praw.Reddit(
 
 
 # Liste des subreddits choisis
-
 subreddits = []
 with open('readit\subreddit.txt', 'r') as f:
     for line in f:

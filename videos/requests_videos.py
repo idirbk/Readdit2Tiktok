@@ -1,13 +1,15 @@
-from googleapiclient.discovery import build
-from pytube import YouTube
 import os
 import random
+from googleapiclient.discovery import build
+from pytube import YouTube
+
 # Initialisez le service YouTube en utilisant vos clés d'API
-youtube = build('youtube', 'v3', developerKey='AIzaSyAYRPKUccJhxDRF5fvzjNG40D8OgZpxg5U')
-def generate_video(title) : 
+youtube = build('youtube', 'v3', developerKey='YOUR_API_KEY')
+
+def generate_video(title):
     # Recherchez des vidéos du jeu Subway Surfers sur YouTube
     search_response = youtube.search().list(
-        q = title +' parkour video tiktok format',
+        q=title + ' parkour video tiktok format',
         type='video',
         videoDefinition='high',
         videoDimension='2d',
@@ -17,7 +19,7 @@ def generate_video(title) :
         fields='items(id(videoId))',
         maxResults=10,
         part='id,snippet',
-        videoDuration='short',
+        videoDuration='long',
         safeSearch='none'
     ).execute()
 
@@ -53,9 +55,12 @@ def generate_video(title) :
             new_path = os.path.join(os.path.dirname(video_path), "video.mp4")
             os.rename(video_path, new_path)
             print("La vidéo a été téléchargée avec succès.")
+            # Close the video file
+            stream.close()
         else:
             print("Impossible de trouver une vidéo correspondant aux critères de recherche.")
 
         print("------------------------------------")
         print(f"Titre: {video_title}")
         print(f"Lien: {video_link}")
+
