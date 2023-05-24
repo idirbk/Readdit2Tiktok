@@ -141,3 +141,5 @@ dmypy.json
 /readit/.vscode/
 
 *.txt
+
+*.json
