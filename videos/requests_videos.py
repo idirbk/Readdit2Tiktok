@@ -58,8 +58,7 @@ def generate_video(title):
             new_path = os.path.join(os.path.dirname(video_path), "video.mp4")
             os.rename(video_path, new_path)
             print("La vidéo a été téléchargée avec succès.")
-            # Close the video file
-            stream.close()
+
         else:
             print("Impossible de trouver une vidéo correspondant aux critères de recherche.")
 
