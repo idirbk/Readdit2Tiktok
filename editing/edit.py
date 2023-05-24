@@ -1,9 +1,15 @@
+import logging
 import cv2
 import pyttsx3
 import numpy as np
 from moviepy import editor as mp
 
+LOGGER = logging.getLogger(__name__)
+
+text_greater = 0
+
 def add_text_and_sound_to_video(video_path, text, output_path, i, start_time=0):
+    global  text_greater
     # Open the video
     video = cv2.VideoCapture(video_path)
 
@@ -24,13 +30,22 @@ def add_text_and_sound_to_video(video_path, text, output_path, i, start_time=0):
     video = mp.VideoFileClip(video_path)
 
     # Trim the video to match the audio duration, starting from start_time
+    if (start_time + audio.duration) > video.duration :
+        print(start_time + audio.duration)
+        print(video.duration)
+        start_time = text_greater
+        text_greater = text_greater + audio.duration + 10
+        if text_greater > video.duration:
+            text_greater = 0
+        print(text_greater)
+
     video = video.subclip(start_time, start_time + audio.duration)
 
     # Set the audio for the video
     video = video.set_audio(audio)
 
     # Add a fade in and fade out effect
-    video = video.crossfadein(2).crossfadeout(2)
+    video = video.crossfadein(5).crossfadeout(5)
 
     # Function to add text to each frame
     def add_text(image):
@@ -131,7 +146,7 @@ def split_text_into_sentences(text, max_length=50):
 
 
 if __name__ == '__main__':
-    print("Starting the script")
+    LOGGER.info(" >>> Starting video creation")
 
     in_path = r"my_video.mp4"
     out_path = r"video_{}.mp4"
@@ -142,20 +157,23 @@ if __name__ == '__main__':
     texts = split_text_into_sentences(text)
 
     for i, chunk in enumerate(texts):
-        print(f"Chunk {i + 1}: {texts[i]}")
+        LOGGER.info(f"Chunk {i + 1}: {texts[i]}")
 
     start_time = 0
     for i in range(len(texts)):
-        print(texts[i])
+        LOGGER.info(texts[i])
         add_text_and_sound_to_video(in_path, texts[i], out_path.format(i), i, start_time)
         start_time += len(texts[i]) / 10  # adjust this to match your TTS speed
 
     # Example usage:
     video_files = []
     for i in range(len(texts)):
-        print(out_path.format(i))
+        LOGGER.info(out_path.format(i))
         video_files.append(out_path.format(i))
 
     output_file = r"concatenation.mp4"
-    print('concatenation')
+    LOGGER.info('concatenation')
     concatenate_videos(video_files, output_file)
+
+    LOGGER.info(" <<< End video creation")
+

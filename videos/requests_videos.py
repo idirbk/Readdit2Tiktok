@@ -3,8 +3,11 @@ import random
 from googleapiclient.discovery import build
 from pytube import YouTube
 
+# Access environment variables
+yt_api_key = os.getenv('YOUTUBE_KEY')
+
 # Initialisez le service YouTube en utilisant vos clés d'API
-youtube = build('youtube', 'v3', developerKey='YOUR_API_KEY')
+youtube = build('youtube', 'v3', developerKey=yt_api_key)
 
 def generate_video(title):
     # Recherchez des vidéos du jeu Subway Surfers sur YouTube
